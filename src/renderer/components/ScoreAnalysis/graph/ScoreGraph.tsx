@@ -57,6 +57,9 @@ const ScoreGraph: React.FC<ScoreGraphProps> = ({
     useRelativeScore,
   );
 
+  const isIntegerXAxis =
+    processedData.length > 0 && processedData.every((point) => Number.isInteger(point.x));
+
   // 事前チェック（Hook 呼び出し後に行う）
   if (!analysisResult || selectedExecutionIds.length === 0) {
     return (
@@ -145,6 +148,7 @@ const ScoreGraph: React.FC<ScoreGraphProps> = ({
               scale={'linear'}
               domain={useLogScale ? ['dataMin', 'dataMax'] : ['auto', 'auto']}
               name={xAxis || 'seed'}
+              allowDecimals={!isIntegerXAxis}
             />
             <YAxis
               scale={useLogScale ? 'log' : 'linear'}
