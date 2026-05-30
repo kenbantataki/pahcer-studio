@@ -15,11 +15,13 @@ import type { TestExecution } from '../../../../schemas/execution';
 import type { AnalysisResponse } from '../../../../schemas/analysis';
 import { useChartDataset, type ScoreGraphPoint } from '../hooks/useScoreGraphData';
 import { useInputFilter } from '../hooks/useGraphData';
+import { getExecutionColor } from '../executionColors';
 
 interface ScoreGraphProps {
   analysisResult: AnalysisResponse | null;
   executions: TestExecution[];
   selectedExecutionIds: string[];
+  executionColors: ReadonlyMap<string, string>;
   inputFilter: string;
   useRelativeScore: boolean;
   useLogScale: boolean;
@@ -30,6 +32,7 @@ const ScoreGraph: React.FC<ScoreGraphProps> = ({
   analysisResult,
   executions,
   selectedExecutionIds,
+  executionColors,
   inputFilter,
   useRelativeScore,
   useLogScale,
@@ -112,19 +115,6 @@ const ScoreGraph: React.FC<ScoreGraphProps> = ({
     );
   }
 
-  const colors = [
-    '#8884d8',
-    '#82ca9d',
-    '#ffc658',
-    '#ff7300',
-    '#00ff00',
-    '#ff00ff',
-    '#00ffff',
-    '#ff0000',
-    '#0000ff',
-    '#ffff00',
-  ];
-
   return (
     <>
       {/* 特徴量キーのヘルプ表示 */}
@@ -203,7 +193,7 @@ const ScoreGraph: React.FC<ScoreGraphProps> = ({
               }}
             />
             <Legend />
-            {selectedExecutionIds.map((execId, index) => {
+            {selectedExecutionIds.map((execId) => {
               const execName =
                 executions.find((e) => e.id === execId)?.comment || execId.substring(0, 8);
               return (
@@ -211,7 +201,7 @@ const ScoreGraph: React.FC<ScoreGraphProps> = ({
                   key={execId}
                   type="monotone"
                   dataKey={execName}
-                  stroke={colors[index % colors.length]}
+                  stroke={getExecutionColor(execId, executionColors)}
                   strokeWidth={2}
                   dot={{ r: 3 }}
                   connectNulls={false}

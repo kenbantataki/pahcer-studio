@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import type { TestExecution } from '../../../schemas/execution';
 import type {
@@ -10,6 +10,7 @@ import type {
 import AnalysisSettings from './AnalysisSettings';
 import ExecutionSelectionTable from './ExecutionSelectionTable';
 import AnalysisChart from './AnalysisChart';
+import { createExecutionColorMap } from './executionColors';
 
 const ScoreAnalysis: React.FC = () => {
   // グローバル状態管理
@@ -199,6 +200,11 @@ const ScoreAnalysis: React.FC = () => {
     setFeatureFormat(value);
   };
 
+  const executionColors = useMemo(
+    () => createExecutionColorMap(executions.map((execution) => execution.id ?? '')),
+    [executions],
+  );
+
   return (
     <Box sx={{ p: 3, overflowY: 'auto', height: '100%', maxWidth: '100%' }}>
       <Typography variant="h4" gutterBottom>
@@ -232,6 +238,7 @@ const ScoreAnalysis: React.FC = () => {
         executions={executions}
         selectedExecutionIds={selectedExecutionIds}
         executionsLoading={executionsLoading}
+        executionColors={executionColors}
         onToggleExecution={toggleExecution}
         onClearAllSelections={clearAllSelections}
       />
@@ -259,6 +266,7 @@ const ScoreAnalysis: React.FC = () => {
           analysisResult={analysisResult}
           executions={executions}
           selectedExecutionIds={selectedExecutionIds}
+          executionColors={executionColors}
         />
       )}
     </Box>

@@ -10,12 +10,14 @@ interface AnalysisChartProps {
   analysisResult: AnalysisResponse | null;
   executions: TestExecution[];
   selectedExecutionIds: string[];
+  executionColors: ReadonlyMap<string, string>;
 }
 
 const AnalysisChart: React.FC<AnalysisChartProps> = ({
   analysisResult,
   executions,
   selectedExecutionIds,
+  executionColors,
 }) => {
   // チャート固有の状態
   const [xAxis, setXAxis] = useState('seed');
@@ -83,6 +85,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
           analysisResult={analysisResult}
           executions={executions}
           selectedExecutionIds={selectedExecutionIds}
+          executionColors={executionColors}
           inputFilter={inputFilter}
           useRelativeScore={useRelativeScore}
           useLogScale={useLogScale}

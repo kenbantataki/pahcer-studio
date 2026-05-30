@@ -13,13 +13,16 @@ import {
   Checkbox,
   CircularProgress,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { TestExecution } from '../../../schemas/execution';
+import { getExecutionColor } from './executionColors';
 
 interface ExecutionSelectionTableProps {
   executions: TestExecution[];
   selectedExecutionIds: string[];
   executionsLoading: boolean;
+  executionColors: ReadonlyMap<string, string>;
   onToggleExecution: (id: string) => void;
   onClearAllSelections: () => void;
 }
@@ -28,6 +31,7 @@ const ExecutionSelectionTable: React.FC<ExecutionSelectionTableProps> = ({
   executions,
   selectedExecutionIds,
   executionsLoading,
+  executionColors,
   onToggleExecution,
   onClearAllSelections,
 }) => {
@@ -74,12 +78,33 @@ const ExecutionSelectionTable: React.FC<ExecutionSelectionTableProps> = ({
             </TableHead>
             <TableBody>
               {executions.map((execution) => (
+                // selected=true の場合は MUI の .Mui-selected スタイルが優先されるため、
+                // 状態セレクタ側にも同じ色を明示して固定マッピングを維持する。
                 <TableRow
                   key={execution.id}
                   selected={selectedExecutionIds.includes(execution.id!)}
                   onClick={() => execution.id && onToggleExecution(execution.id)}
                   hover
-                  sx={{ cursor: 'pointer' }}
+                  sx={{
+                    cursor: 'pointer',
+                    ...(execution.id && selectedExecutionIds.includes(execution.id)
+                      ? {
+                          borderLeft: `4px solid ${getExecutionColor(execution.id, executionColors)}`,
+                          '&&.Mui-selected': {
+                            backgroundColor: `${alpha(
+                              getExecutionColor(execution.id, executionColors),
+                              0.34,
+                            )} !important`,
+                          },
+                          '&&.Mui-selected:hover': {
+                            backgroundColor: `${alpha(
+                              getExecutionColor(execution.id, executionColors),
+                              0.46,
+                            )} !important`,
+                          },
+                        }
+                      : {}),
+                  }}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
