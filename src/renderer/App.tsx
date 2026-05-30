@@ -35,7 +35,7 @@ function TabPanel(props: TabPanelProps) {
       style={{ height: 'calc(100vh - 100px)' }}
       {...other}
     >
-      {value === index && <Box sx={{ p: 0, height: '100%' }}>{children}</Box>}
+      <Box sx={{ p: 0, height: '100%' }}>{children}</Box>
     </div>
   );
 }
